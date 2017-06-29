@@ -51,6 +51,7 @@ class SearchView(View):
         except:
             page = 1
         jobbole_count = redis_cli.get("jobbole_count")
+        LaGou_count = redis_cli.get("LaGou_count")
         start_time = datetime.now()
         response = client.search(
             index="jobbole",
@@ -76,7 +77,7 @@ class SearchView(View):
         end_time = datetime.now()
         last_seconds = (end_time - start_time).total_seconds()
         total_nums = response["hits"]["total"]
-        if (page%10) > 0:
+        if (page % 10) > 0:
             page_nums = int(total_nums/10) + 1
         else:
             page_nums = int(total_nums/10)
@@ -104,4 +105,5 @@ class SearchView(View):
                                                "page_nums": page_nums,
                                                "last_seconds": last_seconds,
                                                "jobbole_count": jobbole_count,
+                                               "LaGou_count": LaGou_count,
                                                "topn_search": topn_search})
