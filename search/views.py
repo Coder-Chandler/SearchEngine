@@ -1,7 +1,7 @@
 import json
 from django.shortcuts import render
 from django.views.generic.base import View
-from search.models import ArticleType
+from search.models import ArticleType, ZhihuQuestionType, ZhihuAnswerType, LaGou
 from django.http import HttpResponse
 from elasticsearch import Elasticsearch
 from datetime import datetime
@@ -13,7 +13,7 @@ redis_cli = redis.StrictRedis()
 
 class IndexView(View):
     # 首页
-    def get(selfself, request):
+    def get(self, request):
         topn_search = redis_cli.zrevrangebyscore("search_keywords_set", "+inf", "-inf", start=0, num=5)
         return render(request, "index.html", {"topn_search": topn_search})
 
@@ -24,18 +24,19 @@ class SearchSuggest(View):
         key_words = request.GET.get('s', '')
         re_datas = []
         if key_words:
-            s = ArticleType.search()
-            s = s.suggest('my_suggest', key_words, completion={
-                "field": "suggest", "fuzzy": {
-                    "fuzziness": 2
-                },
-                "size": 10
-            })
-            suggestions = s.execute_suggest()
-            for match in suggestions.my_suggest[0].options:
-                sourse = match._source
-                re_datas.append(sourse["title"])
-        return HttpResponse(json.dumps(re_datas), content_type="application/json")
+            search = [ArticleType.search(), LaGou.search()]
+            for s in search:
+                s = s.suggest('my_suggest', key_words, completion={
+                    "field": "suggest", "fuzzy": {
+                        "fuzziness": 2
+                    },
+                    "size": 10
+                })
+                suggestions = s.execute_suggest()
+                for match in suggestions.my_suggest[0].options:
+                    sourse = match._source
+                    re_datas.append(sourse["title"])
+            return HttpResponse(json.dumps(re_datas), content_type="application/json")
 
 
 class SearchView(View):
@@ -51,7 +52,7 @@ class SearchView(View):
         except:
             page = 1
         jobbole_count = redis_cli.get("jobbole_count")
-        LaGou_count = redis_cli.get("LaGou_count")
+        lagoujob_count = redis_cli.get("lagoujob_count")
         start_time = datetime.now()
         response = client.search(
             index="jobbole",
@@ -105,5 +106,5 @@ class SearchView(View):
                                                "page_nums": page_nums,
                                                "last_seconds": last_seconds,
                                                "jobbole_count": jobbole_count,
-                                               "LaGou_count": LaGou_count,
+                                               "lagoujob_count": lagoujob_count,
                                                "topn_search": topn_search})

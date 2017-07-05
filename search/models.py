@@ -18,8 +18,9 @@ class CustomAnalyzer(_CustomAnalyzer):
 
 ik_analyzer = CustomAnalyzer("ik_max_word", filter=["lowercase"])
 
+
 class ArticleType(DocType):
-    #伯乐在线文章类型
+    # 伯乐在线文章类型
     suggest = Completion(analyzer=ik_analyzer)
     title = Text(analyzer="ik_max_word")
     create_date = Date()
@@ -38,8 +39,47 @@ class ArticleType(DocType):
         doc_type = "article"
 
 
+class ZhihuQuestionType(DocType):
+    # 伯乐在线文章类型
+    suggest = Completion(analyzer=ik_analyzer)
+    zhihu_id = Keyword()
+    topics = Text(analyzer="ik_max_word")
+    url = Keyword()
+    title = Text(analyzer="ik_max_word")
+    content = Text(analyzer="ik_max_word")
+    answer_num = Integer()
+    comments_num = Integer()
+    watch_user_num = Integer()
+    click_num = Integer()
+    crawl_time = Date()
+
+    class Meta:
+        index = "zhihu"
+        doc_type = "zhihuquestion"
+
+
+class ZhihuAnswerType(DocType):
+    # 伯乐在线文章类型
+    suggest = Completion(analyzer=ik_analyzer)
+    zhihu_id = Keyword()
+    url = Keyword()
+    question_id = Keyword()
+    author_id = Keyword()
+    content = Text(analyzer="ik_max_word")
+    praise_num = Integer()
+    comments_num = Integer()
+    create_time = Date()
+    update_time = Date()
+    crawl_time = Date()
+
+    class Meta:
+        index = "zhihu"
+        doc_type = "zhihuanswer"
+
+
 class LaGou(DocType):
     # 伯乐在线文章类型
+    suggest = Completion(analyzer=ik_analyzer)
     url = Keyword()
     url_object_id = Keyword()
     title = Text(analyzer="ik_max_word")
@@ -61,6 +101,9 @@ class LaGou(DocType):
         index = "lagou"
         doc_type = "lagoujob"
 
+
 if __name__ == "__main__":
     ArticleType.init()
+    ZhihuQuestionType.init()
+    ZhihuAnswerType.init()
     LaGou.init()
