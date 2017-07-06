@@ -20,9 +20,9 @@
     </div>
     <div class="nav">
     	<ul class="searchList">
-            <li class="searchItem current" data-type="article">文章</li>
-            <li class="searchItem" data-type="question">问答</li>
-            <li class="searchItem" data-type="job">职位</li>
+            <li class="searchItem {% if s_type == 'article' %}current{% endif %}" data-type="article">文章</li>
+            <li class="searchItem {% if s_type == 'question' %}current{% endif %}" data-type="question">问答</li>
+            <li class="searchItem {% if s_type == 'job' %}current{% endif %}" data-type="job">职位</li>
         </ul>
     </div>
 	<div id="bd" class="ue-clear">

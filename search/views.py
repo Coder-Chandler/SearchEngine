@@ -18,25 +18,60 @@ class IndexView(View):
         return render(request, "index.html", {"topn_search": topn_search})
 
 
+def index_suggest(value, key_words):
+    # 搜索建议的辅助函数
+    re_datas = []
+    s = value.search()
+    s = s.suggest('my_suggest', key_words, completion={
+        "field": "suggest", "fuzzy": {
+            "fuzziness": 2
+        },
+        "size": 10
+    })
+    suggestions = s.execute_suggest()
+    for match in suggestions.my_suggest[0].options:
+        sourse = match._source
+        re_datas.append(sourse["title"])
+    return re_datas
+
+
 # Create your views here.
 class SearchSuggest(View):
     def get(self, request):
         key_words = request.GET.get('s', '')
+        click_words = request.GET.get('s_type', '')
         re_datas = []
         if key_words:
-            search = [ArticleType.search(), LaGou.search()]
-            for s in search:
-                s = s.suggest('my_suggest', key_words, completion={
-                    "field": "suggest", "fuzzy": {
-                        "fuzziness": 2
-                    },
-                    "size": 10
-                })
-                suggestions = s.execute_suggest()
-                for match in suggestions.my_suggest[0].options:
-                    sourse = match._source
-                    re_datas.append(sourse["title"])
-            return HttpResponse(json.dumps(re_datas), content_type="application/json")
+            if click_words == "article":
+                re_datas = index_suggest(ArticleType, key_words)
+            elif click_words == "job":
+                re_datas = index_suggest(LaGou, key_words)
+        return HttpResponse(json.dumps(re_datas), content_type="application/json")
+
+
+def SearchResult(tag, key_words, page):
+    response = client.search(
+        index=tag,
+        body={
+            "query": {
+                "multi_match": {
+                    "query": key_words,
+                    "fields": ["tags", "title", "content"]
+                }
+            },
+            "from": (page - 1) * 10,
+            "size": 10,
+            "highlight": {
+                "pre_tags": ['<span class="keyWord">'],
+                "post_tags": ['</span class="keyWord">'],
+                "fields": {
+                    "title": {},
+                    "content": {},
+                }
+            }
+        }
+    )
+    return response
 
 
 class SearchView(View):
@@ -54,27 +89,7 @@ class SearchView(View):
         jobbole_count = redis_cli.get("jobbole_count")
         lagoujob_count = redis_cli.get("lagoujob_count")
         start_time = datetime.now()
-        response = client.search(
-            index="jobbole",
-            body={
-                "query": {
-                    "multi_match": {
-                        "query": key_words,
-                        "fields": ["tags", "title", "content"]
-                    }
-                },
-                "from": (page-1)*10,
-                "size": 10,
-                "highlight": {
-                    "pre_tags": ['<span class="keyWord">'],
-                    "post_tags": ['</span class="keyWord">'],
-                    "fields": {
-                        "title": {},
-                        "content": {},
-                    }
-                }
-            }
-        )
+        response = SearchResult("jobbole", key_words, page)
         end_time = datetime.now()
         last_seconds = (end_time - start_time).total_seconds()
         total_nums = response["hits"]["total"]
@@ -100,6 +115,7 @@ class SearchView(View):
 
             hit_list.append(hit_dict)
         return render(request, "result.html", {"page": page,
+                                               "s_type": s_type,
                                                "all_hits": hit_list,
                                                "key_words": key_words,
                                                "total_nums": total_nums,
