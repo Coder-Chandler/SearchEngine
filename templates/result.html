@@ -68,7 +68,7 @@
                                 <span class="divsion">-</span>
                                 <span class="fileType">
                                     <span class="label">来源：</span>
-                                    <span class="value">伯乐在线</span>
+                                    <span class="value">{{ hit.from }}</span>
                                 </span>
                                 <span class="dependValue">
                                     <span class="label">得分：</span>
@@ -81,14 +81,19 @@
                             <div class="itemFoot">
                                 <span class="info">
                                     <label>网站：</label>
-                                    <span class="value">伯乐在线</span>
+                                    <span class="value">{{ hit.from }}</span>
+                                </span>
+                                <span class="info">
+                                    <label>标签：</label>
+                                    <span class="value">{{ hit.tags }}</span>
                                 </span>
                                 <span class="info">
                                     <label>发布时间：</label>
-                                    <span class="value">2017-04-23</span>
+                                    <span class="value">{{ hit.create_date }}</span>
                                 </span>
                             </div>
                         </div>
+                        &nbsp;
                     {% endfor %}
                 </div>
                 <!-- 分页 -->
