@@ -51,7 +51,7 @@ class SearchSuggest(View):
 
 def client_search(tag, key_words, page):
     # 代码复用， 定义搜索项目
-    response = client.search(
+    return client.search(
         index=tag,
         body={
             "query": {
@@ -72,7 +72,7 @@ def client_search(tag, key_words, page):
             }
         }
     )
-    return response
+    #return response
 
 
 def get_hit_dict(click_words, hit_dict, hit, content, create_date):
@@ -96,14 +96,12 @@ def get_hit_dict(click_words, hit_dict, hit, content, create_date):
 # class Detail(View):
 def SearchResult(key_words, page, click_words):
     # 单独定义获取搜索页面所需要的数据，以便代码复用
+    tag = ""
     if click_words == "article":
         tag = "jobbole"
-        response = client_search(tag, key_words, page)
-        return response
     if click_words == "job":
         tag = "lagou"
-        response = client_search(tag, key_words, page)
-        return response
+    return client_search(tag, key_words, page)
 
 
 def GetTagDetail(response, click_words):
@@ -115,7 +113,6 @@ def GetTagDetail(response, click_words):
             time = "create_date"
             content = "content"
             hit_dict = get_hit_dict(name, hit_dict, hit, content, time)
-        hit_list.append(hit_dict)
         if click_words == "job":
             name = "拉勾网"
             time = "publish_time"
@@ -144,7 +141,7 @@ class SearchView(View):
         response = SearchResult(key_words, page, click_words)
         end_time = datetime.now()
         last_seconds = (end_time - start_time).total_seconds()
-        total_nums = response["hits"]["total"]
+        total_nums = int(response["hits"]["total"])
         if (page % 10) > 0:
             page_nums = int(total_nums / 10) + 1
         else:
