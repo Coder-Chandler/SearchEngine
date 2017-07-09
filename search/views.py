@@ -39,13 +39,15 @@ def index_suggest(value, key_words):
 class SearchSuggest(View):
     def get(self, request):
         key_words = request.GET.get('s', '')
-        click_words = request.GET.get('s_type', '')
+        s_type = request.GET.get('s_type', '')
         re_datas = []
         if key_words:
-            if click_words == "article":
+            if s_type == "article":
                 re_datas = index_suggest(ArticleType, key_words)
-            elif click_words == "job":
+            elif s_type == "job":
                 re_datas = index_suggest(LaGou, key_words)
+            elif s_type == "question":
+                re_datas = index_suggest(ZhihuQuestionType, key_words)
         return HttpResponse(json.dumps(re_datas), content_type="application/json")
 
 
@@ -72,52 +74,61 @@ def client_search(tag, key_words, page):
             }
         }
     )
-    #return response
 
 
-def get_hit_dict(click_words, hit_dict, hit, content, create_date):
+def get_hit_dict(s_type, hit_dict, hit, content, create_date, tags):
     # 代码复用，把数据传进client_search
-    hit_dict["from"] = click_words
-    if "title" in hit["highlight"]:
+    hit_dict["from"] = s_type
+    if "title" in hit.get("highlight", ""):
         hit_dict["title"] = "".join(hit["highlight"]["title"])
     else:
         hit_dict["title"] = hit["_source"]["title"]
-    if "content" in hit["highlight"]:
+    if "content" in hit.get("highlight", ""):
         hit_dict["content"] = "".join(hit["highlight"][content])[:500]
     else:
         hit_dict["content"] = hit["_source"][content][:500]
     hit_dict["create_date"] = hit["_source"][create_date]
-    hit_dict["tags"] = hit["_source"]["tags"]
+    hit_dict["tags"] = hit["_source"][tags]
     hit_dict["url"] = hit["_source"]["url"]
     hit_dict["score"] = hit["_score"]
     return hit_dict
 
 
 # class Detail(View):
-def SearchResult(key_words, page, click_words):
+def SearchResult(key_words, page, s_type):
     # 单独定义获取搜索页面所需要的数据，以便代码复用
     tag = ""
-    if click_words == "article":
+    if s_type == "article":
         tag = "jobbole"
-    if click_words == "job":
+    if s_type == "job":
         tag = "lagou"
+    if s_type == "question":
+        tag = "zhihu"
     return client_search(tag, key_words, page)
 
 
-def GetTagDetail(response, click_words):
+def GetTagDetail(response, s_type):
     hit_list = []
     for hit in response["hits"]["hits"]:
         hit_dict = {}
-        if click_words == "article":
+        if s_type == "article":
             name = "伯乐在线"
             time = "create_date"
             content = "content"
-            hit_dict = get_hit_dict(name, hit_dict, hit, content, time)
-        if click_words == "job":
+            tags = "tags"
+            hit_dict = get_hit_dict(name, hit_dict, hit, content, time, tags)
+        if s_type == "job":
             name = "拉勾网"
             time = "publish_time"
             content = "job_desc"
-            hit_dict = get_hit_dict(name, hit_dict, hit, content, time)
+            tags = "tags"
+            hit_dict = get_hit_dict(name, hit_dict, hit, content, time, tags)
+        if s_type == "zhihu":
+            name = "知乎"
+            time = "crawl_time"
+            content = "content"
+            tags = "topics"
+            hit_dict = get_hit_dict(name, hit_dict, hit, content, time, tags)
         hit_list.append(hit_dict)
     return hit_list
 
@@ -125,7 +136,7 @@ def GetTagDetail(response, click_words):
 class SearchView(View):
     def get(self, request):
         key_words = request.GET.get("q", "")
-        click_words = request.GET.get('s_type', '')
+        # click_words = request.GET.get('s_type', '')
         s_type = request.GET.get("s_type", "article")
         redis_cli.zincrby("search_keywords_set", key_words)
 
@@ -137,8 +148,9 @@ class SearchView(View):
             page = 1
         jobbole_count = redis_cli.get("jobbole_count")
         lagoujob_count = redis_cli.get("lagoujob_count")
+        ZhihuQuestion_count = redis_cli.get("ZhihuQuestion_count")
         start_time = datetime.now()
-        response = SearchResult(key_words, page, click_words)
+        response = SearchResult(key_words, page, s_type)
         end_time = datetime.now()
         last_seconds = (end_time - start_time).total_seconds()
         total_nums = int(response["hits"]["total"])
@@ -146,7 +158,7 @@ class SearchView(View):
             page_nums = int(total_nums / 10) + 1
         else:
             page_nums = int(total_nums / 10)
-        hit_list = GetTagDetail(response, click_words)
+        hit_list = GetTagDetail(response, s_type)
         return render(request, "result.html", {"page": page,
                                                "s_type": s_type,
                                                "all_hits": hit_list,
@@ -156,4 +168,5 @@ class SearchView(View):
                                                "last_seconds": last_seconds,
                                                "jobbole_count": jobbole_count,
                                                "lagoujob_count": lagoujob_count,
+                                               "ZhihuQuestion_count": ZhihuQuestion_count,
                                                "topn_search": topn_search})
