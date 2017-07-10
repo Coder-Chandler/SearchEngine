@@ -31,7 +31,10 @@ def index_suggest(value, key_words):
     suggestions = s.execute_suggest()
     for match in suggestions.my_suggest[0].options:
         sourse = match._source
-        re_datas.append(sourse["title"])
+        try:
+            re_datas.append(sourse["title"])
+        except KeyError:
+            re_datas.append(sourse["content"][:50])
     return re_datas
 
 
@@ -47,7 +50,10 @@ class SearchSuggest(View):
             elif s_type == "job":
                 re_datas = index_suggest(LaGou, key_words)
             elif s_type == "question":
-                re_datas = index_suggest(ZhihuQuestionType, key_words)
+                if key_words:
+                    re_datas = index_suggest(ZhihuQuestionType, key_words)
+                else:
+                    re_datas = index_suggest(ZhihuAnswerType, key_words)
         return HttpResponse(json.dumps(re_datas), content_type="application/json")
 
 
@@ -76,20 +82,32 @@ def client_search(tag, key_words, page):
     )
 
 
-def get_hit_dict(s_type, hit_dict, hit, content, create_date, tags):
+def get_hit_dict(s_type, hit_dict, hit, content, create_date):
     # 代码复用，把数据传进client_search
     hit_dict["from"] = s_type
-    if "title" in hit.get("highlight", ""):
-        hit_dict["title"] = "".join(hit["highlight"]["title"])
-    else:
-        hit_dict["title"] = hit["_source"]["title"]
+    try:
+        if "title" in hit.get("highlight", ""):
+            hit_dict["title"] = "".join(hit["highlight"]["title"])
+        else:
+            hit_dict["title"] = hit["_source"]["title"]
+    except KeyError:
+        hit_dict["title"] = hit["_source"][content][:50]
     if "content" in hit.get("highlight", ""):
         hit_dict["content"] = "".join(hit["highlight"][content])[:500]
     else:
         hit_dict["content"] = hit["_source"][content][:500]
-    hit_dict["create_date"] = hit["_source"][create_date]
-    hit_dict["tags"] = hit["_source"][tags]
-    hit_dict["url"] = hit["_source"]["url"]
+    try :
+        hit_dict["create_date"] = hit["_source"][create_date]
+    except KeyError:
+        hit_dict["create_date"] = hit["_source"]["crawl_time"]
+    try:
+        hit_dict["tags"] = hit["_source"]["topics"]
+    except KeyError:
+        hit_dict["tags"] = hit["_source"][content][:50]
+    try:
+        hit_dict["url"] = hit["_source"]["url"]
+    except KeyError:
+        hit_dict["url"] = "https://www.zhihu.com/question/{0}".format(hit["_source"]["question_id"])
     hit_dict["score"] = hit["_score"]
     return hit_dict
 
@@ -115,20 +133,17 @@ def GetTagDetail(response, s_type):
             name = "伯乐在线"
             time = "create_date"
             content = "content"
-            tags = "tags"
-            hit_dict = get_hit_dict(name, hit_dict, hit, content, time, tags)
+            hit_dict = get_hit_dict(name, hit_dict, hit, content, time)
         if s_type == "job":
             name = "拉勾网"
             time = "publish_time"
             content = "job_desc"
-            tags = "tags"
-            hit_dict = get_hit_dict(name, hit_dict, hit, content, time, tags)
-        if s_type == "zhihu":
+            hit_dict = get_hit_dict(name, hit_dict, hit, content, time)
+        if s_type == "question":
             name = "知乎"
-            time = "crawl_time"
+            time = "create_date"
             content = "content"
-            tags = "topics"
-            hit_dict = get_hit_dict(name, hit_dict, hit, content, time, tags)
+            hit_dict = get_hit_dict(name, hit_dict, hit, content, time)
         hit_list.append(hit_dict)
     return hit_list
 
@@ -149,6 +164,7 @@ class SearchView(View):
         jobbole_count = redis_cli.get("jobbole_count")
         lagoujob_count = redis_cli.get("lagoujob_count")
         ZhihuQuestion_count = redis_cli.get("ZhihuQuestion_count")
+        ZhihuAnswer_count = redis_cli.get("ZhihuAnswer_count")
         start_time = datetime.now()
         response = SearchResult(key_words, page, s_type)
         end_time = datetime.now()
@@ -169,4 +185,5 @@ class SearchView(View):
                                                "jobbole_count": jobbole_count,
                                                "lagoujob_count": lagoujob_count,
                                                "ZhihuQuestion_count": ZhihuQuestion_count,
+                                               "ZhihuAnswer_count": ZhihuAnswer_count,
                                                "topn_search": topn_search})
