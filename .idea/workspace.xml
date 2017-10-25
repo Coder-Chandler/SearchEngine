@@ -3,8 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="c72e0f8d-00f5-4668-b90b-6f37ebb36f28" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/LcvSeach.iml" afterPath="$PROJECT_DIR$/.idea/LcvSeach.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -35,7 +35,7 @@
       <file leaf-file-name="urls.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/LcvSeach/urls.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="478">
+            <state relative-caret-position="462">
               <caret line="24" column="27" lean-forward="false" selection-start-line="24" selection-start-column="27" selection-end-line="24" selection-end-column="27" />
               <folding>
                 <element signature="e#642#674#0" expanded="true" />
@@ -47,7 +47,7 @@
       <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/search/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="284">
+            <state relative-caret-position="1056">
               <caret line="54" column="0" lean-forward="false" selection-start-line="54" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
               <folding>
                 <element signature="e#46#75#0" expanded="true" />
@@ -59,7 +59,7 @@
       <file leaf-file-name="result.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/result.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1191">
+            <state relative-caret-position="1232">
               <caret line="56" column="16" lean-forward="false" selection-start-line="56" selection-start-column="16" selection-end-line="56" selection-end-column="16" />
               <folding />
             </state>
@@ -79,7 +79,7 @@
       <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-365">
+            <state relative-caret-position="1540">
               <caret line="70" column="0" lean-forward="false" selection-start-line="70" selection-start-column="0" selection-end-line="70" selection-end-column="0" />
               <folding />
             </state>
@@ -89,7 +89,7 @@
       <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/search/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1415">
+            <state relative-caret-position="22">
               <caret line="4" column="16" lean-forward="false" selection-start-line="4" selection-start-column="12" selection-end-line="4" selection-end-column="16" />
               <folding />
             </state>
@@ -162,6 +162,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -193,7 +194,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scratches" />
       <pane id="Scope" />
     </panes>
   </component>
@@ -483,8 +483,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1366" height="796" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15407854" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15634441" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3280116" sideWeight="0.50303954" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32978722" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -717,7 +718,7 @@
     <entry file="file://$USER_HOME$/.virtualenvs/lcv_search/lib/python3.4/site-packages/elasticsearch_dsl/utils.py" />
     <entry file="file://$PROJECT_DIR$/templates/result.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1191">
+        <state relative-caret-position="1232">
           <caret line="56" column="16" lean-forward="false" selection-start-line="56" selection-start-column="16" selection-end-line="56" selection-end-column="16" />
           <folding />
         </state>
@@ -725,7 +726,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-365">
+        <state relative-caret-position="1540">
           <caret line="70" column="0" lean-forward="false" selection-start-line="70" selection-start-column="0" selection-end-line="70" selection-end-column="0" />
           <folding />
         </state>
@@ -735,7 +736,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -743,7 +743,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -751,7 +750,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="21" lean-forward="true" selection-start-line="0" selection-start-column="21" selection-end-line="0" selection-end-column="21" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -759,13 +757,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/LcvSeach/urls.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="478">
+        <state relative-caret-position="462">
           <caret line="24" column="27" lean-forward="false" selection-start-line="24" selection-start-column="27" selection-end-line="24" selection-end-column="27" />
           <folding>
             <element signature="e#642#674#0" expanded="true" />
@@ -775,7 +772,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/search/models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="284">
+        <state relative-caret-position="1056">
           <caret line="54" column="0" lean-forward="false" selection-start-line="54" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
           <folding>
             <element signature="e#46#75#0" expanded="true" />
@@ -785,7 +782,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/search/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1415">
+        <state relative-caret-position="22">
           <caret line="4" column="16" lean-forward="false" selection-start-line="4" selection-start-column="12" selection-end-line="4" selection-end-column="16" />
           <folding />
         </state>
